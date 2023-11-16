@@ -1,10 +1,15 @@
 import express from "express";
 import mongoose from "mongoose"
+import {config} from "dotenv"
 import userRouter from "./routes/User-routes.js";
 import blogRouter from "./routes/Blog-routes.js"
 import cors from "cors";
 
 const app = express();
+
+config({
+    path : "./config.env"
+})
 
 app.use(express.json());
 app.use(cors({
@@ -17,8 +22,10 @@ app.use(cors({
 app.use("/api/user" , userRouter);
 app.use("/api/blog" , blogRouter);
 
-mongoose.connect('mongodb+srv://srijanverma102:wVNnQfBrkSEBpM8v@cluster0.j8kgcpw.mongodb.net/?retryWrites=true&w=majority')
-.then(() => app.listen(4000))
-.then(() => console.log("Connected to Database and Listening to localhost 4000"))
+mongoose.connect(process.env.MONGO_URL , {
+    dbName : "backendapi",
+})
+.then(() => app.listen(process.env.PORT))
+.then(() => console.log(`Connected to Database and Listening to localhost ${process.env.PORT}`))
 .catch((err) => console.log(err));
 
